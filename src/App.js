@@ -1,25 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import RouteComponent from './components/Routes';
+import RootLayout from './Layout';
+import { AuthProvider } from 'react-auth-kit';
 
-function App() {
+
+export default function App() {
+
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <AuthProvider authType={'cookie'}
+        authName={'_auth'}
+        cookieDomain={window.location.hostname}
+        cookieSecure={window.location.protocol === "https:"}>
+        <RootLayout>
+          <RouteComponent />
+        </RootLayout>
+      </AuthProvider>
+    </>
+
+  )
 }
 
-export default App;
