@@ -2,7 +2,7 @@ import './App.css';
 import RouteComponent from './components/Routes';
 import RootLayout from './Layout';
 import { AuthProvider } from 'react-auth-kit';
-
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
 
@@ -19,6 +19,7 @@ export default function App() {
           <RouteComponent />
         </RootLayout>
       </AuthProvider>
+      <Analytics />
     </>
 
   )
