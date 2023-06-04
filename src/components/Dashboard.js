@@ -4,6 +4,7 @@ import { FaUserAstronaut } from 'react-icons/fa'
 
 
 import FileUpload from './FileUpload'
+import ConfirmEmail from './ConfirmEmail'
 
 export default function Dashboard() {
     const isAuthenticated = useIsAuthenticated()
@@ -17,6 +18,7 @@ export default function Dashboard() {
 
     return (
         <>
+            <ConfirmEmail />
             <div className='flex lg:justify-end sm:justify-center md:justify-center gap-2 pl-2 pt-2'>
 
                 <FaUserAstronaut className={"text-slate-500 w-5 h-auto"} />

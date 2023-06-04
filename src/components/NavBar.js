@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthUser, useSignOut, useIsAuthenticated } from 'react-auth-kit'
+import initPocketBase from '../helpers/initPocketbase';
+
 // import logo from "../../public/logo512.png"
 
 
@@ -10,6 +12,7 @@ export default function NavBar() {
     const navigate = useNavigate()
     const auth = useAuthUser()
     const signOut = useSignOut()
+    const pb = initPocketBase();
 
     // console.log(auth())
 
@@ -22,7 +25,11 @@ export default function NavBar() {
         }
     }
 
-
+    const signOutUser = () => {
+        pb.authStore.clear();
+        signOut()
+        navigate("/")
+    }
 
 
     return (
@@ -39,11 +46,11 @@ export default function NavBar() {
             <div className="block items-center order-last">
                 {!isAuthenticated() &&
                     <Link to={"/login"} className="inline-block text-sm px-3 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-zinc-500 hover:bg-white lg:mt-0">
-                        Login
+                        Sign in
                     </Link>
                 }
                 {isAuthenticated() &&
-                    <button onClick={() => signOut()} className="inline-block text-sm px-3 py-2 my-4 ml-4 leading-none border rounded text-white border-white hover:border-transparent hover:text-zinc-500 hover:bg-white lg:mt-0">
+                    <button onClick={signOutUser} className="inline-block text-sm px-3 py-2 my-4 ml-4 leading-none border rounded text-white border-white hover:border-transparent hover:text-zinc-500 hover:bg-white lg:mt-0">
                         Logout
                     </button>
                 }

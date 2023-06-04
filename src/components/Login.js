@@ -24,50 +24,98 @@ function ErrorMessage({ message }) {
     )
 }
 
+const hintInitState = {
+    "email": true,
+    "password": true,
+    "emailMessage": "Must be a valid email.",
+    "passwordMessage": "Must be at least 8 characters long."
+}
 
 export default function Login() {
     const [isLoading, setLoading,] = useState(false)
     const [isError, setError] = useState("")
-    const { register, handleSubmit, reset } = useForm();
+    const [hint, SetHint] = useState(hintInitState)
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const signIn = useSignIn()
     const redirect = useNavigate()
     const pb = initPocketBase();
 
     const LOGOUT_IN_MIN = 7 * 24 * 60
 
-    async function login(data) {
+
+    async function SignUpUser(data) {
+        const register_data = {
+            email: data.email,
+            password: data.password,
+            passwordConfirm: data.password
+
+        }
+        try {
+
+            // register
+            const record = await pb.collection('users').create(register_data);
+            console.log(record)
+
+            // (optional) send an email verification request
+            // await pb.collection('users').requestVerification('test@example.com');
+        }
+        catch {
+            // setError("Error creating user.")
+        }
+    }
+
+    async function SignInUser(data) {
         setLoading(true);
         setError("")
-        try {
-            const result = await pb
-                .collection('users')
-                .authWithPassword(data.email, data.password);
 
-            console.log("Result: ", result)
-            if (signIn(
-                {
-                    token: pb.authStore.token,
-                    expiresIn: LOGOUT_IN_MIN,
-                    tokenType: "Bearer",
-                    authState: pb.authStore.model,
-                    // refreshToken: res.data.refreshToken,                    // Only if you are using refreshToken feature
-                    // refreshTokenExpireIn: res.data.refreshTokenExpireIn     // Only if you are using refreshToken feature
-                }
-            )) {
-                // Redirect or do-something
-                // console.log("logged in, redirecting")
-                redirect("/dashboard", { replace: true })
+        const result = await pb
+            .collection('users')
+            .authWithPassword(data.email, data.password);
 
+        console.log("Result: ", result)
+        if (signIn(
+            {
+                token: pb.authStore.token,
+                expiresIn: LOGOUT_IN_MIN,
+                tokenType: "Bearer",
+                authState: pb.authStore.model,
+                // refreshToken: res.data.refreshToken,                    // Only if you are using refreshToken feature
+                // refreshTokenExpireIn: res.data.refreshTokenExpireIn     // Only if you are using refreshToken feature
             }
-        } catch (error) {
-            console.log("Error: ", error.message)
-            setError(error.message)
-        }
+        )) {
+            // Redirect or do-something
+            // console.log("logged in, redirecting")
+            redirect("/dashboard", { replace: true })
 
+        }
+    }
+
+    // Email sing in or sing up
+    async function handleSingInOrSignUp(data) {
+        setLoading(true);
+        setError("")
+
+        try {
+            await SignInUser(data)
+        }
+        catch (error) {
+            // sign in failed, lets register him
+            console.log("Sing in failed")
+            try {
+                console.log("Trying to sing up and sing in")
+                await SignUpUser(data)
+                await SignInUser(data)
+
+            } catch (error) {
+                console.log("Failed to sing up and sing in")
+
+                // register also failed, show error
+                setError("Login failed. Try again. ")
+            }
+        }
         setLoading(false)
         reset()
     }
-
 
 
     // Provider sign in
@@ -109,6 +157,40 @@ export default function Login() {
     }
 
 
+    function validateFormData(e) {
+        // console.log(e.target.name, e.target.value)
+
+        // email validation
+        if (e.target.name === "email") {
+            // for empty field we dont display anything... Form has the field as required anyway
+            if (e.target.value === "") {
+                SetHint({ ...hint, "email": true });
+            }
+            else {
+                const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                console.log("email validation", emailRegex.test(e.target.value))
+                SetHint({ ...hint, "email": emailRegex.test(e.target.value) });
+            }
+        }
+        // password validation
+        if (e.target.name === "password") {
+            // for empty field we dont display anything... Form has the field as required anyway
+            if (e.target.value === "") {
+                SetHint({ ...hint, "password": true });
+            }
+            else {
+                if (e.target.value.length < 8) {
+                    SetHint({ ...hint, "password": false });
+                }
+                else {
+                    SetHint({ ...hint, "password": true });
+                }
+            }
+        }
+    }
+
+
+
     return (
         <div className="flex w-full justify-center items-center mt-4">
             <div className="mx-1 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 text-xl bg-gray-800 rounded-lg shadow-gray-800 shadow-md border-2 border-gray-600 px-4 py-4"  >
@@ -116,7 +198,7 @@ export default function Login() {
                 <div className="flex justify-center items-center py-4">
                     <button onClick={loginWithProvider} data-provider="google" className="px-4 py-2 border flex gap-2 border-slate-200 rounded-lg text-slate-200 hover:border-slate-400 hover:text-slate-400 hover:shadow transition duration-250">
                         <img className="w-6 h-6 pt-1" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
-                        <span className='self-center'>{isLoading ? "Logging in..." : "Login with Google"}</span>
+                        <span className='self-center'>{isLoading ? "Please wait..." : "Sign in with Google"}</span>
                     </button>
                 </div>
                 <div className="inline-flex items-center justify-center w-full">
@@ -126,24 +208,48 @@ export default function Login() {
                     </span>
                 </div>
                 <div className='flex justify-center'>
-                    <form onSubmit={handleSubmit(login)} className="w-full md:w-4/5 lg:w-3/5 px-8 pb-8 mb-4">
+                    <form onSubmit={handleSubmit(handleSingInOrSignUp)}
+                        className="w-full md:w-4/5 lg:w-3/5 px-8 pb-8 mb-4"
+                        onChange={(e) => validateFormData(e)}>
                         <div className="mb-4">
                             <label className="block text-gray-300 text-xl font-bold mb-2">
                                 Email
                             </label>
-                            <input required {...register("email")} className="shadown appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" placeholder="you@email.com" />
+                            <input required
+                                {...register("email",
+                                    {
+                                        required: true,
+                                        pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                    })}
+                                className="shadown appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="email"
+                                type="text"
+                                placeholder="you@email.com"
+                                autoComplete="email" />
+                            {/* <p>Email error: {errors.email}</p> */}
+                            {!hint.email && <p className="pt-1 text-sm text-red-500 text-bold text-center">{hint.emailMessage}</p>}
                         </div>
                         <div className="mb-6">
                             <label className="block text-gray-300 text-xl font-bold mb-2">
                                 Password
                             </label>
-                            <input required  {...register("password")} className="shadown appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password">
+                            <input required  {...register("password")} className="shadown appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" autoComplete="current-password">
                             </input>
+                            {!hint.password && <p className="pt-1 text-sm text-red-500 text-bold text-center">{hint.passwordMessage}</p>}
+
                         </div>
                         <div className="flex justify-center " >
-                            <button className="bg-transparent border border-slate-200 rounded-lg hover:border-slate-400 text-slate-200 hover:text-slate-400  py-2 px-4 focus:outline-none focus:shadow-outline  hover:shadow transition duration-250" type="submit">
-                                {isLoading ? "Please wait..." : "Login"}
+                            <button className="bg-transparent border border-slate-200 rounded-lg hover:border-slate-400 text-slate-200 hover:text-slate-400  px-4 py-2 focus:outline-none focus:shadow-outline  hover:shadow transition duration-250" type="submit">
+                                {isLoading ? "Please wait..." : "Sign in with Email"}
                             </button>
+                        </div>
+                        <div >
+                            <div className="flex justify-center mt-4 text-sm align-middle text-gray-500">
+                                <span>No account? </span>
+                            </div>
+                            <div className="flex justify-center  text-sm align-middle text-gray-500">
+                                <span>Sign in and we'll create it.</span>
+                            </div>
                         </div>
                         {isError && <ErrorMessage message={isError} />}
                     </form>
