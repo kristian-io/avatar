@@ -1,0 +1,10 @@
+
+
+h1.text_shadow {
+    text-shadow: 1px 1px 1px white;
+}
+
+p.text_shadow {
+    text-shadow: 1px 1px 1px rgb(219 39 119);
+
+}

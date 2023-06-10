@@ -137,7 +137,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
 
 
     return (
-        <div >
+        <div className="bg-slate-950" >
             <ul className="flex justify-center">
                 <div className='w-full lg:w-4/5 '>
                     {galeries.map((gallery) => (
@@ -147,7 +147,8 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
                                 {!gallery.job_status && <button onClick={() => createTrainingJob(gallery.id)}
                                     className='flex items-center gap-1 px-4 py-2 border-2  bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 font-extrabold border-slate-200 rounded-lg text-white hover:border-fuchsia-800 hover:shadow transition duration-250 animate-pulse'
                                     disabled={gallery.job_status === "wip"}>
-                                    <MdRocketLaunch className='w-6 h-auto ' />
+                                    <MdRocketLaunch className='w-6 h-auto ' /> 
+                                    Train AI Model
                                 </button>}
                                 {gallery.job_status === "wip" && "AI is learning..."}
                                 {gallery.job_status === "done" && <button><Link to={"/gallery"}>

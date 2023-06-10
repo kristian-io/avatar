@@ -18,7 +18,7 @@ export default function ConfirmEmail() {
 
 
     return (
-        <div>
+        <div className="bg-slate-950">
             {emailConfirmed ? <h1>Email Confirmed</h1> : <h1>Email Not Confirmed</h1>}
         </div>
     )

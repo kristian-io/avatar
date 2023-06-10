@@ -10,7 +10,7 @@ import { IoCloudUploadOutline } from 'react-icons/io5';
 const defaultStatus = { message: "", type: "info", delay: 5000 }
 
 
-const FileUploader = () => {
+export default function FileUpload() {
     const [files, setFiles] = useState([]);
     const [status, setStatus] = useState(defaultStatus)
     const [refreshTrigger, setRefreshTrigger] = useState(true)
@@ -67,7 +67,7 @@ const FileUploader = () => {
     };
 
     return (
-        <>
+        <div className="bg-slate-950">
             < form onSubmit={handleSubmit} >
                 <div className="m-4  p-2 lg:p-6 border border-slate-800 bg-slate-900 rounded justify-center large:w-3/5 small:w-full" >
                     <h1 className='flex justify-center text-center my-8  text-xl'>Upload your Photos to create a new Gallery</h1>
@@ -107,8 +107,8 @@ const FileUploader = () => {
                 <Notification message={status.message} type={status.type} delay={status.delay} />
             }
             <GalleryDashboard refreshTriggerParent={refreshTrigger} />
-        </>
-    );
-};
+            <div />
+        </div >
+    )
+}
 
-export default FileUploader;

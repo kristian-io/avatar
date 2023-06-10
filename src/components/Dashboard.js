@@ -17,7 +17,7 @@ export default function Dashboard() {
     // if (isAuthenticated()) {
 
     return (
-        <>
+        <div className="bg-slate-950">
             <ConfirmEmail />
             <div className='flex lg:justify-end sm:justify-center md:justify-center gap-2 pl-2 pt-2'>
 
@@ -29,7 +29,7 @@ export default function Dashboard() {
             </div>
 
             <FileUpload />
-        </>
+        </div>
     )
     // }
     // else return navigate("/login", { replace: true })

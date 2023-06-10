@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import initPocketBase from '../helpers/initPocketbase';
 import { useAuthUser } from 'react-auth-kit';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function GalleryResults({ refreshTriggerParent }) {
     const pb = initPocketBase();
@@ -8,7 +9,7 @@ export default function GalleryResults({ refreshTriggerParent }) {
     const [galeries, setGaleries] = useState([])
     const [token, setToken] = useState("fake")
     const [refreshTrigger, setRefreshTrigger] = useState(refreshTriggerParent)
-
+    // const navigate = useNavigate()
 
 
 
@@ -106,20 +107,32 @@ export default function GalleryResults({ refreshTriggerParent }) {
 
     if (galeries.length === 0) {
         return (
-            <div className='flex  min-h-full h-[calc(100vh-25vh)] overflow-hidden min-w-full text-white'>
-                <div className='m-4 p-4'>
-                    <h1 className='flex'>You do not have any galleries yet.</h1>
-                </div>
-                <div className='m-4 p-4 '>
-                    <div className='justify-center m-4 p-4'>
-                        <button className='items-center '>Get started</button>
+            <div className="bg-slate-950 min-h-full h-[calc(100vh-25vh)] overflow-hidden min-w-full text-white">
+                <div className="flex justify-center">
+                    <div className='m-4 p-4'>
+                        <h1 className='text-2xl text-slate-200 shadow-lg'>You do not have any galleries yet.</h1>
                     </div>
                 </div>
+                <div className="flex justify-center">
+                    <div className="w-1/2 leading-4">
+                        <p className="leading-4">1. Upload your selfies. (1min)</p>
+                        <p>2. Train an AI model with 1 click. (50min)</p>
+                        <p>3. Model generates your photos from expertly crafted prompts. (10min)</p>
+                        <p>4. Magic: Get your results.</p>
+                    </div>
+                </div>
+                <Link to="/dashboard">
+                    <div className='flex justify-center m-4 p-4 '>
+                        <button className="text_shadow mb-1 m-4 p-2 font-bold text-2xl rounded  border-2  hover:bg-slate-100 bg-pink-700 hover:text-pink-700 border-pink-700 transition duration-700" >
+                            Get started
+                        </button>
+                    </div>
+                </Link>
             </div>
         )
     }
     else return (
-        <div >
+        <div className="bg-slate-950">
             <ul className="flex justify-center">
                 <div className='w-full lg:w-4/5 '>
                     {galeries.map((gallery) => (
