@@ -33,7 +33,7 @@ export default function GalleryResults({ refreshTriggerParent }) {
         }
 
         return (
-            <div className="z-40 sticky top-0 flex justify-center cursor-pointer bg-slate-800 /75 h - screen"
+            <div className="z-40 sticky top-0 flex justify-center cursor-pointer bg-slate-800/75 h-screen"
                 onClick={closePreview} >
                 <div className="w-screen md:w-2/3" >
                     <img onError={refreshUrl} alt="preview" className="z-50 aspect-auto m-auto rounded-lg bg-no-repeat" src={url} />
