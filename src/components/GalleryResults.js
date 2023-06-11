@@ -20,14 +20,25 @@ export default function GalleryResults({ refreshTriggerParent }) {
     const [refreshTrigger, setRefreshTrigger] = useState(refreshTriggerParent)
     // const navigate = useNavigate()
 
+
+
+
     function ImagePreview({ url }) {
+
+        async function refreshUrl() {
+            const fileToken = await pb.files.getToken();
+            const partUrl = previewUrl.split("?token=")[0]
+            const url = partUrl + "?token=" + fileToken
+            setPreviewUrl(url)
+        }
+
         return (
-            <div className="z-40 sticky top-0 flex justify-center cursor-pointer bg-slate-800/75 h-screen"
-                onClick={closePreview}>
-                <div className="w-full md:w-2/3">
-                    <img alt="preview" className="z-50 w-full h-auto rounded-lg bg-no-repeat" src={url} />
+            <div className="z-40 sticky top-0 flex justify-center cursor-pointer bg-slate-800 /75 h - screen"
+                onClick={closePreview} >
+                <div className="w-screen md:w-2/3" >
+                    <img onError={refreshUrl} alt="preview" className="z-50 aspect-auto m-auto rounded-lg bg-no-repeat" src={url} />
                 </div>
-            </div>
+            </div >
 
         )
     }
@@ -67,8 +78,19 @@ export default function GalleryResults({ refreshTriggerParent }) {
                 updated_galleries.push({ ...gallery, "imageUrls": imageUrls })
 
             }
-            console.log(`Galleries`, updated_galleries);
-            setGaleries(updated_galleries)
+            // console.log(`Galleries`, updated_galleries);
+
+            // we dont update it if the galeries are same length
+            if (updated_galleries.length !== galeries.length) {
+                setGaleries(updated_galleries)
+            }
+            // but we need to update of the filetoken changed
+            // if (fileToken !== token) {
+            //     setGaleries(updated_galleries)
+            // }
+            console.log("token state:", token)
+            console.log("token fetched:", fileToken)
+
         }
         catch (error) {
             console.log(error)
@@ -85,45 +107,10 @@ export default function GalleryResults({ refreshTriggerParent }) {
         return url
     }
 
-
-
-
-    // const deleteGalleryPhotos = async (galleryId, photoIds) => {
-
-    //     console.log(`Deleting galleryId: ${galleryId} photosIds: ${photoIds}`)
-
-    //     if (!photoIds) {
-    //         // delete all "documents" files
-    //         await pb.collection('gallery').delete(galleryId);
-    //         // update the gallery
-    //         setRefreshTrigger(!refreshTrigger)
-
-    //     }
-    //     else {
-    //         // delete individual files
-    //         await pb.collection('gallery').update(galleryId, {
-    //             'image-': photoIds,
-    //         });
-    //         // update the gallery
-    //         setRefreshTrigger(!refreshTrigger)
-
-    //     }
-
-    // }
-
-
-
     async function fetchData() {
         await getUserGalleryData();
     }
 
-
-    // =====================================================================================================
-
-    // useEffect(() => {
-    //     // monitor update trigger from the parent element (on files upload) and trigger the state change 
-    //     setRefreshTrigger(!refreshTrigger)
-    // }, [refreshTriggerParent]);
 
 
     useEffect(() => {
@@ -137,6 +124,8 @@ export default function GalleryResults({ refreshTriggerParent }) {
             console.log("Fetching data ...")
             fetchData()
         }, 5 * 60 * 1000)
+        // }, 5000)
+
         return () => clearInterval(id)
     })
 

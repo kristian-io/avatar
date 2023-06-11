@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuthUser, useSignOut, useIsAuthenticated } from 'react-auth-kit'
+import { useAuthUser, useSignOut, useIsAuthenticated } from 'react-auth-kit';
 import initPocketBase from '../helpers/initPocketbase';
 
 // import logo from "../../public/logo512.png"
@@ -10,7 +10,7 @@ export default function NavBar() {
     const [menuVisible, setMenuVisible] = useState("hidden")
     const isAuthenticated = useIsAuthenticated();
     const navigate = useNavigate()
-    const auth = useAuthUser()
+    // const auth = useAuthUser()
     const signOut = useSignOut()
     const pb = initPocketBase();
 

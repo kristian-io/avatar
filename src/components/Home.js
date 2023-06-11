@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { FaMagic } from 'react-icons/fa'
-
+// import { FaMagic } from 'react-icons/fa'
+import { Link } from "react-router-dom";
 
 const images = [
     {
@@ -55,10 +55,19 @@ export default function Home() {
                         AI turns your selfies into a stunning, photoshop level images.
                     </p>
                     <p className="text_shadow text-slate-300 lg:text-3xl sm:text-xl font-bold text-center pt-8 pb-10 lg:pt-14">
-                        Upload 10 selfies and get 300 expertly crafted photos.
+                        Upload 15 selfies and get 300 expertly crafted photos.
                     </p>
 
-                    <div className="flex justify-center">
+                    <div className="flex justify-center mb-10 ">
+                        <Link to={"/dashboard"} >
+                            <button className="text_shadow mb-1 m-4 p-2 font-bold text-2xl rounded  border-2  hover:bg-slate-100 bg-pink-700 hover:text-pink-700 border-pink-700 transition duration-700">
+                                Get Started
+                            </button>
+                        </Link>
+                    </div>
+
+
+                    {/* <div className="flex justify-center">
                         <input
                             className="appearance-none rounded-md w-4/5 h-12 md:w-2/3 lg:w-3/5 p-2 focus:shadow-outline focus:outline-2 focus:outline-dotted outline-pink-700 text-pink-600 font-bold text-2xl "
                             required
@@ -75,11 +84,11 @@ export default function Home() {
                     </div>
                     <div className="flex justify-center">
                         <p className="text-xs text-slate-700">We'll let you know when we launch. No spam. </p>
-                    </div>
+                    </div> */}
 
 
                 </div>
-                <div className="w-full md:w-1/2 lg:w-1/2 ">
+                <div className="w-full md:w-1/2 lg:w-1/2 mb-10">
                     <div className="flex justify-center items-center p-2">
                         <p className="font-extralight text-xs ">From your photos like this.</p>
                     </div>
