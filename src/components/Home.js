@@ -96,7 +96,7 @@ export default function Home() {
                     <div className="flex flex-wrap gap-1 justify-center cursor-pointer pt-0 p-4"
                         onClick={() => switchPhotoUrl("result")}>
                         <img src={resultPhoto} alt="result"
-                            className="w-auto h-1/6 rounded-xl" />
+                            className="w-auto h-1/6 rounded-xl opacity-100 transition ease-in-out delay-150 duration-500 hover:scale-105" />
                         {/* <img src="examples/result2.png" alt=""
                             className="w-auto h-1/6 rounded-xl" />
                         <img src="examples/result3.png" alt=""
