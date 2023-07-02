@@ -4,11 +4,19 @@ import { Link } from "react-router-dom";
 
 const images = [
     {
-        "source": "examples/source.jpg",
+        "source": "examples/group1/source.jpg",
         "results": [
-            "examples/result1.png",
-            "examples/result2.png",
-            "examples/result3.png"
+            "examples/group1/result1.png",
+            "examples/group1/result2.png",
+            "examples/group1/result3.png"
+        ]
+    },
+    {
+        "source": "examples/group2/source.jpg",
+        "results": [
+            "examples/group2/result1.png",
+            "examples/group2/result2.png",
+            "examples/group2/result3.png"
         ]
     }
 ]
@@ -29,6 +37,13 @@ export default function Home() {
             return url
         } else {
             // TODO implement source photo switch...
+            const group_index = (group + 1) % images.length
+            // console.log("group index", group_index)
+            const url = images[group_index].source
+            SetSourcePhoto(url)
+            SetResultPhoto(images[group_index].results[0])
+            SetGroup(group_index)
+            return url
         }
     }
 
@@ -92,7 +107,8 @@ export default function Home() {
                     <div className="flex justify-center items-center p-2">
                         <p className="font-extralight text-xs ">From your photos like this.</p>
                     </div>
-                    <div className="flex justify-center pt-0 p-4 w-auto h-56 overflow-hidden "  >
+                    <div className="flex justify-center cursor-pointer pt-0 p-4 w-auto h-56 overflow-hidden "
+                        onClick={() => switchPhotoUrl("source")} >
                         <img hidden={false} src={sourcePhoto} alt="source"
                             className=" rounded-xl  " />
 
@@ -105,7 +121,7 @@ export default function Home() {
                     <div className="flex flex-wrap gap-1 justify-center cursor-pointer pt-0 p-4"
                         onClick={() => switchPhotoUrl("result")}>
                         <img src={resultPhoto} alt="result"
-                            className="w-auto h-1/6 rounded-xl opacity-100 transition ease-in-out delay-150 duration-500 hover:scale-105" />
+                            className="w-auto lg:h-[550px] rounded-xl opacity-100 transition ease-in-out delay-150 duration-500 hover:scale-105" />
                         {/* <img src="examples/result2.png" alt=""
                             className="w-auto h-1/6 rounded-xl" />
                         <img src="examples/result3.png" alt=""

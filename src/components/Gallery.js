@@ -25,7 +25,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
             for (let gallery of galleries) {
                 const trainingJobInfo = await getTrainingJobStatus(gallery.id);
                 if (trainingJobInfo) {
-                    console.log(`GalleryID: ${gallery.id} training job id: ${trainingJobInfo.id} training job status: ${trainingJobInfo.status}`);
+                    // console.log(`GalleryID: ${gallery.id} training job id: ${trainingJobInfo.id} training job status: ${trainingJobInfo.status}`);
                     updated_galleries.push({ ...gallery, job_id: trainingJobInfo.id, job_status: trainingJobInfo.status });
                 } else {
                     updated_galleries.push({ ...gallery });
@@ -54,7 +54,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
 
     const deleteGalleryPhotos = async (galleryId, photoIds) => {
 
-        console.log(`Deleting galleryId: ${galleryId} photosIds: ${photoIds}`)
+        // console.log(`Deleting galleryId: ${galleryId} photosIds: ${photoIds}`)
 
         if (!photoIds) {
             // delete all "documents" files
@@ -77,7 +77,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
 
     async function getTrainingJobStatus(galleryId) {
 
-        console.log(`Getting status of training job for galleryId: ${galleryId} `)
+        // console.log(`Getting status of training job for galleryId: ${galleryId} `)
 
         try {
             // const trainingJob = await pb.collection('training_jobs').getList(1, 1, {
@@ -85,7 +85,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
             // })
 
             const trainingJob = await pb.collection('training_jobs').getFirstListItem(`gallery_id="${galleryId}"`);
-            console.log(trainingJob)
+            // console.log(trainingJob)
             return trainingJob
         } catch (error) {
             // console.log(error)
@@ -98,7 +98,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
 
 
     async function createTrainingJob(galleryId, settings) {
-        console.log(`Creating training job for userId: ${auth().id} \ngalleryID: ${galleryId} \nsettings: ${settings}`)
+        // console.log(`Creating training job for userId: ${auth().id} \ngalleryID: ${galleryId} \nsettings: ${settings}`)
         try {
             const data = {
                 "user_id": auth().id,
@@ -107,7 +107,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
                 "status": "new"
             };
             const record = await pb.collection('training_jobs').create(data);
-            console.log(record)
+            // console.log(record)
         } catch (error) {
             console.log(error)
         }
@@ -129,7 +129,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
 
     useEffect(() => {
         // when our internal (on gallery delete) trigger changes update the gallery...
-        console.log("gallery update triggered...")
+        // console.log("gallery update triggered...")
         fetchData()
 
 
@@ -147,7 +147,7 @@ export default function GalleryDashboard({ refreshTriggerParent }) {
                                 {!gallery.job_status && <button onClick={() => createTrainingJob(gallery.id)}
                                     className='flex items-center gap-1 px-4 py-2 border-2  bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 font-extrabold border-slate-200 rounded-lg text-white hover:border-fuchsia-800 hover:shadow transition duration-250 animate-pulse'
                                     disabled={gallery.job_status === "wip"}>
-                                    <MdRocketLaunch className='w-6 h-auto ' /> 
+                                    <MdRocketLaunch className='w-6 h-auto ' />
                                     Train AI Model
                                 </button>}
                                 {gallery.job_status === "wip" && "AI is learning..."}
