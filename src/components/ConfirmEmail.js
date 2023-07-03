@@ -1,25 +1,25 @@
-import initPocketBase from '../helpers/initPocketbase';
+import initPocketBase from "../helpers/initPocketbase";
 
-import { useState, useEffect } from 'react';
-import { useAuthUser, useIsAuthenticated } from 'react-auth-kit'
-
-
+import { useState, useEffect } from "react";
+import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
 
 export default function ConfirmEmail() {
-    const auth = useAuthUser()
-    const [emailConfirmed, setEmailConfirmed] = useState(false)
-    const pb = initPocketBase()
-
+    const auth = useAuthUser();
+    const [emailConfirmed, setEmailConfirmed] = useState(false);
+    const pb = initPocketBase();
 
     useEffect(() => {
-        const verified = pb.authStore.model.verified
-        setEmailConfirmed(verified)
-    })
-
+        const verified = pb.authStore.model.verified;
+        setEmailConfirmed(verified);
+    });
 
     return (
         <div className="bg-slate-950">
-            {emailConfirmed ? <h1>Email Confirmed</h1> : <h1>Email Not Confirmed</h1>}
+            {emailConfirmed ? (
+                <h1>Email Confirmed</h1>
+            ) : (
+                <h1>Email Not Confirmed</h1>
+            )}
         </div>
-    )
+    );
 }
