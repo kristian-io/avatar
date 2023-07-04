@@ -59,15 +59,13 @@ export default function Examples() {
                     From your photos like this.
                 </p>
             </div>
-            <div
-                className="flex justify-center cursor-pointer pt-0 p-4 w-auto h-56 overflow-hidden"
-                onClick={() => switchPhotoUrl("source")}
-            >
+            <div className="flex justify-center pt-0 p-4 w-auto h-32 2xl:h-56 overflow-hidden">
                 <img
                     hidden={false}
                     src={sourcePhoto}
                     alt="source"
-                    className="rounded-xl"
+                    className="rounded-xl cursor-pointer "
+                    onClick={() => switchPhotoUrl("source")}
                 />
             </div>
             <div className="flex justify-center items-center p-2">
@@ -76,14 +74,12 @@ export default function Examples() {
                 </p>
             </div>
 
-            <div
-                className="flex flex-wrap gap-1 justify-center cursor-pointer pt-0 p-4"
-                onClick={() => switchPhotoUrl("result")}
-            >
+            <div className="flex flex-wrap gap-1 justify-center pt-0 p-4">
                 <img
                     src={resultPhoto}
                     alt="result"
-                    className="w-auto lg:h-[550px] rounded-xl opacity-100 transition ease-in-out delay-150 duration-500 hover:scale-105"
+                    onClick={() => switchPhotoUrl("result")}
+                    className="w-auto 2xl:h-[550px] h-[320px] rounded-xl cursor-pointer  opacity-100 transition ease-in-out delay-150 duration-500 hover:scale-105"
                 />
                 {/* <img src="examples/result2.png" alt=""
                             className="w-auto h-1/6 rounded-xl" />

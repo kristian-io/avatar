@@ -17,17 +17,17 @@ export default function Home() {
     return (
         <div className="w-full h-full min-h-full bg-slate-950 overflow-auto">
             <div div className="flex flex-wrap w-full min-h-full">
-                <div className="w-full items-center md:w-1/2 lg:w-1/2 pt-4 lg:pl-6 md:pt-8 md:pb-36 sm:pb-12">
-                    <div className="mt-12  md:mt-32">
-                        <h1 className="text_shadow font-extrabold text-pink-600 drop-shadow-lg shadow-green-500 text-5xl lg:text-7xl  text-center hover:scale-105 transition duration-700 ">
+                <div className="w-full items-center md:w-1/2 lg:w-1/2 lg:pt-4 lg:pl-6 md:pt-8 md:pb-36 sm:pb-12">
+                    <div className="mt-12  md:mt-15 lg:mt-20 2xl:mt-32">
+                        <h1 className="text_shadow font-extrabold text-pink-600 drop-shadow-lg shadow-green-500 text-3xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-7xl text-center hover:scale-105 transition duration-700 ">
                             Supercharge your selfies.
                         </h1>
                     </div>
-                    <p className="text_shadow text-slate-300 lg:text-3xl sm:text-xl font-bold font-mono text-center pt-8 lg:pt-14 ">
+                    <p className="text_shadow text-slate-300 2xl:text-4xl lg:text-2xl sm:text-xl font-bold font-mono text-center pt-8 lg:pt-14 ">
                         AI turns your selfies into a stunning, photoshop level
                         images.
                     </p>
-                    <p className="text_shadow text-slate-300 lg:text-3xl sm:text-xl font-bold text-center pt-8 pb-10 lg:pt-14">
+                    <p className="text_shadow text-slate-300 2xl:text-4xl lg:text-2xl sm:text-xl font-bold text-center pt-8 pb-10 lg:pt-14">
                         Upload 15 selfies and get 300 expertly crafted photos.
                     </p>
 
