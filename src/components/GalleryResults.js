@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { saveAs } from "file-saver";
+import { FaSpinner } from "react-icons/fa";
 
 import initPocketBase from "../helpers/initPocketbase";
 import ImagePreview from "./ImagePreview";
 import ImageResultSection from "./ImageResultSection";
 
-const MAX_GALLERIES_FETCHED = 10;
+const MAX_GALLERIES_FETCHED = 3;
 
 export default function GalleryResults() {
     const pb = initPocketBase();
@@ -128,10 +129,13 @@ export default function GalleryResults() {
                 <div>
                     <div className="flex justify-center">
                         <div className="m-4 p-4">
+                            <FaSpinner
+                                className="animate-spin m-auto p-2"
+                                size={55}
+                            />
                             <h1 className="text-2xl text-slate-200 shadow-lg">
                                 Loading your generated galleries...
                             </h1>
-                            {/* spinner */}
                         </div>
                     </div>
                 </div>
@@ -173,8 +177,9 @@ export default function GalleryResults() {
                     <button
                         className="flex items-center border border-slate-400 hover:border-slate-200 rounded-lg p-2 m-4 mb-6 transition duration-250"
                         onClick={loadMoreResults}
+                        disabled={loadingResults}
                     >
-                        Load More
+                        {loadingResults ? "Loading..." : "Load More"}
                     </button>
                 </div>
             )}

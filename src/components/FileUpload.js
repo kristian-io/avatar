@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import initPocketBase from "../helpers/initPocketbase";
+import React, { useEffect, useState } from "react";
 import { useAuthUser } from "react-auth-kit";
 import { useRef } from "react";
+import initPocketBase from "../helpers/initPocketbase";
 import Notification from "./Notification";
 import GalleryDashboard from "./Gallery";
 import { IoCloudUploadOutline } from "react-icons/io5";
+import { FaSpinner } from "react-icons/fa";
 
 const defaultStatus = { message: "", type: "info", delay: 5000 };
 
@@ -38,16 +39,15 @@ export default function FileUpload() {
                 .create(formData);
 
             // Perform further action/logic here based on the newly created record
-            console.log(createdRecord);
+            // console.log(createdRecord);
             ref.current.value = "";
-            let info = {};
-            info = { message: "Upload successful", type: "info" };
+            const info = { message: "Upload successful", type: "info" };
             setStatus((status) => ({
                 ...status,
                 ...info,
             }));
             setIsUploading(false);
-            // trigger refresh of the galery by flipping it
+            // trigger refresh of the gallery
             setRefreshTrigger(!refreshTrigger);
         } catch (error) {
             console.error(error);
@@ -60,6 +60,10 @@ export default function FileUpload() {
             setIsUploading(false);
         }
     };
+
+    useEffect(() => {
+        console.log("trigger", refreshTrigger);
+    }, [refreshTrigger]);
 
     return (
         <div className="bg-slate-950">
@@ -104,6 +108,12 @@ export default function FileUpload() {
                                         ? "Uploading..."
                                         : "Create Gallery"}
                                 </span>
+                                {isUploading && (
+                                    <FaSpinner
+                                        className="animate-spin m-auto p-2"
+                                        size={35}
+                                    />
+                                )}
                             </button>
                         </div>
                     </div>
@@ -116,7 +126,7 @@ export default function FileUpload() {
                     delay={status.delay}
                 />
             )}
-            <GalleryDashboard refreshTriggerParent={refreshTrigger} />
+            <GalleryDashboard refreshTriggerParrent={refreshTrigger} />
             <div />
         </div>
     );
