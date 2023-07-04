@@ -16,9 +16,13 @@ export default function ConfirmEmail() {
     return (
         <div className="bg-slate-950">
             {emailConfirmed ? (
-                <h1>Email Confirmed</h1>
+                <span className="mr-2 mt-2 text-slate-500 text-center text-sm">
+                    Email Confirmed
+                </span>
             ) : (
-                <h1>Email Not Confirmed</h1>
+                <span className="mr-2 mt-2 text-slate-500 text-center text-sm">
+                    Email Not Confirmed
+                </span>
             )}
         </div>
     );

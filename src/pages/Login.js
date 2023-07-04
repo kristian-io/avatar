@@ -165,7 +165,7 @@ export default function Login() {
     return (
         <div className="bg-slate-950">
             <div className="flex w-full justify-center items-center mt-4 md:mt-10 mb-4">
-                <div className="mx-1 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 text-xl bg-gray-800 rounded-lg shadow-gray-800 shadow-md border border-gray-600 px-4 py-4">
+                <div className="mx-1 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 text-xl bg-slate-900 rounded-lg shadow-gray-900 shadow-md border border-slate-800 px-4 py-4">
                     <div className="flex justify-center items-center py-4">
                         <button
                             onClick={loginWithProvider}
