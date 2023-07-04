@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import Dashboard from "./Dashboard";
-import Home from "./Home";
-import GalleryResults from "./GalleryResults";
+import Login from "../pages/Login";
+import Dashboard from "../pages/Dashboard";
+import Home from "../pages/Home";
+import GalleryResults from "../pages/GalleryResults";
 
 import { useIsAuthenticated } from "react-auth-kit";
 import { useLocation, Navigate } from "react-router-dom";

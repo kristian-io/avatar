@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import Examples from "./Examples";
+import Examples from "../components/Examples";
 
 export default function Home() {
     const GetStartedButton = () => (

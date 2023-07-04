@@ -1,16 +1,11 @@
-import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
-import { useNavigate } from "react-router-dom";
+import { useAuthUser } from "react-auth-kit";
 import { FaUserAstronaut } from "react-icons/fa";
 
-import FileUpload from "./FileUpload";
-import ConfirmEmail from "./ConfirmEmail";
+import FileUpload from "../components/FileUpload";
+import ConfirmEmail from "../components/ConfirmEmail";
 
 export default function Dashboard() {
-    const isAuthenticated = useIsAuthenticated();
-    const navigate = useNavigate();
     const auth = useAuthUser();
-
-    // if (isAuthenticated()) {
 
     return (
         <div className="bg-slate-950">
@@ -28,6 +23,4 @@ export default function Dashboard() {
             <FileUpload />
         </div>
     );
-    // }
-    // else return navigate("/login", { replace: true })
 }

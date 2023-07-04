@@ -4,8 +4,8 @@ import { saveAs } from "file-saver";
 import { FaSpinner } from "react-icons/fa";
 
 import initPocketBase from "../helpers/initPocketbase";
-import ImagePreview from "./ImagePreview";
-import ImageResultSection from "./ImageResultSection";
+import ImagePreview from "../components/ImagePreview";
+import ImageResultSection from "../components/ImageResultSection";
 
 const MAX_GALLERIES_FETCHED = 3;
 

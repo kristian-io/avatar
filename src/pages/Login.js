@@ -1,27 +1,10 @@
-import initPocketBase from "../helpers/initPocketbase";
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useSignIn } from "react-auth-kit";
 
-function ErrorMessage({ message }) {
-    const [display, setDisplay] = useState(true);
-
-    setTimeout(() => {
-        setDisplay(false);
-    }, 5000);
-
-    return (
-        <div className="flex justify-center">
-            {display && (
-                <span className="border-2 border-pink-600 text-gray-200 font-light rounded px-2 py-1 mx-2 my-2">
-                    {message}
-                </span>
-            )}
-        </div>
-    );
-}
+import initPocketBase from "../helpers/initPocketbase";
+import ErrorMessage from "../components/ErrorMessage";
 
 const hintInitState = {
     email: true,
@@ -29,6 +12,8 @@ const hintInitState = {
     emailMessage: "Must be a valid email.",
     passwordMessage: "Must be at least 8 characters long.",
 };
+
+const LOGOUT_IN_MIN = 7 * 24 * 60;
 
 export default function Login() {
     const [isLoading, setLoading] = useState(false);
@@ -44,8 +29,6 @@ export default function Login() {
     const redirect = useNavigate();
     const pb = initPocketBase();
 
-    const LOGOUT_IN_MIN = 7 * 24 * 60;
-
     async function SignUpUser(data) {
         const register_data = {
             email: data.email,
@@ -60,7 +43,7 @@ export default function Login() {
             // (optional) send an email verification request
             // await pb.collection('users').requestVerification('test@example.com');
         } catch {
-            // setError("Error creating user.")
+            setError("Creating account failed.");
         }
     }
 
@@ -100,13 +83,11 @@ export default function Login() {
             // sign in failed, lets register him
             console.log("Sing in failed");
             try {
-                console.log("Trying to sing up and sing in");
+                console.log("Trying to sing up and then sign in");
                 await SignUpUser(data);
                 await SignInUser(data);
             } catch (error) {
                 console.log("Failed to sing up and sing in");
-
-                // register also failed, show error
                 setError("Login failed. Try again. ");
             }
         }
@@ -151,8 +132,6 @@ export default function Login() {
     }
 
     function validateFormData(e) {
-        // console.log(e.target.name, e.target.value)
-
         // email validation
         if (e.target.name === "email") {
             // for empty field we dont display anything... Form has the field as required anyway
@@ -161,10 +140,10 @@ export default function Login() {
             } else {
                 const emailRegex =
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                console.log(
-                    "email validation",
-                    emailRegex.test(e.target.value)
-                );
+                // console.log(
+                //     "email validation",
+                //     emailRegex.test(e.target.value)
+                // );
                 SetHint({ ...hint, email: emailRegex.test(e.target.value) });
             }
         }
@@ -184,13 +163,9 @@ export default function Login() {
     }
 
     return (
-        <>
-            {/* <div className="flex justify-center text-center">
-                <h1 className="text-gray-200 md:text-4xl text-2xl p-4 font-bold">Sign in to get started.</h1>
-            </div> */}
+        <div className="bg-slate-950">
             <div className="flex w-full justify-center items-center mt-4 md:mt-10 mb-4">
                 <div className="mx-1 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 text-xl bg-gray-800 rounded-lg shadow-gray-800 shadow-md border border-gray-600 px-4 py-4">
-                    {/* <h1 className=" text-cyan-300 text-4xl capitalize text-center">Login</h1> */}
                     <div className="flex justify-center items-center py-4">
                         <button
                             onClick={loginWithProvider}
@@ -287,6 +262,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
