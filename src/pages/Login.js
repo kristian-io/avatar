@@ -7,8 +7,8 @@ import initPocketBase from "../helpers/initPocketbase";
 import ErrorMessage from "../components/ErrorMessage";
 
 const hintInitState = {
-    email: true,
-    password: true,
+    email: false,
+    password: false,
     emailMessage: "Must be a valid email.",
     passwordMessage: "Must be at least 8 characters long.",
 };
@@ -40,7 +40,7 @@ export default function Login() {
             const record = await pb.collection("users").create(register_data);
             console.log(record);
 
-            // (optional) send an email verification request
+            // send an email verification request
             // await pb.collection('users').requestVerification('test@example.com');
         } catch {
             setError("Creating account failed.");
@@ -66,8 +66,6 @@ export default function Login() {
                 // refreshTokenExpireIn: res.data.refreshTokenExpireIn     // Only if you are using refreshToken feature
             })
         ) {
-            // Redirect or do-something
-            // console.log("logged in, redirecting")
             redirect("/dashboard", { replace: true });
         }
     }
@@ -80,7 +78,7 @@ export default function Login() {
         try {
             await SignInUser(data);
         } catch (error) {
-            // sign in failed, lets register him
+            // sign in failed, lets try registering him
             console.log("Sing in failed");
             try {
                 console.log("Trying to sing up and then sign in");
@@ -100,7 +98,6 @@ export default function Login() {
         setLoading(true);
         setError("");
 
-        // console.log(event.target.parentElement.dataset.provider)
         // we grab the provider from the button diretly or from the parent of the img/span...
         const provider =
             event.target.dataset.provider ||
@@ -118,7 +115,6 @@ export default function Login() {
                     // refreshTokenExpireIn: res.data.refreshTokenExpireIn     // Only if you are using refreshToken feature
                 })
             ) {
-                // Redirect or do-something
                 console.log("logged in, redirecting");
                 redirect("/dashboard", { replace: true });
             }
@@ -136,27 +132,23 @@ export default function Login() {
         if (e.target.name === "email") {
             // for empty field we dont display anything... Form has the field as required anyway
             if (e.target.value === "") {
-                SetHint({ ...hint, email: true });
+                SetHint({ ...hint, email: false });
             } else {
                 const emailRegex =
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                // console.log(
-                //     "email validation",
-                //     emailRegex.test(e.target.value)
-                // );
-                SetHint({ ...hint, email: emailRegex.test(e.target.value) });
+                SetHint({ ...hint, email: !emailRegex.test(e.target.value) });
             }
         }
-        // password validation
+        // simple password validation
         if (e.target.name === "password") {
             // for empty field we dont display anything... Form has the field as required anyway
             if (e.target.value === "") {
-                SetHint({ ...hint, password: true });
+                SetHint({ ...hint, password: false });
             } else {
                 if (e.target.value.length < 8) {
-                    SetHint({ ...hint, password: false });
-                } else {
                     SetHint({ ...hint, password: true });
+                } else {
+                    SetHint({ ...hint, password: false });
                 }
             }
         }
@@ -215,7 +207,7 @@ export default function Login() {
                                     autoComplete="email"
                                 />
                                 {/* <p>Email error: {errors.email}</p> */}
-                                {!hint.email && (
+                                {hint.email && (
                                     <p className="pt-1 text-sm text-red-500 text-bold text-center">
                                         {hint.emailMessage}
                                     </p>
@@ -233,7 +225,7 @@ export default function Login() {
                                     type="password"
                                     autoComplete="current-password"
                                 ></input>
-                                {!hint.password && (
+                                {hint.password && (
                                     <p className="pt-1 text-sm text-red-500 text-bold text-center">
                                         {hint.passwordMessage}
                                     </p>

@@ -1,17 +1,15 @@
 import initPocketBase from "../helpers/initPocketbase";
 
 import { useState, useEffect } from "react";
-import { useAuthUser, useIsAuthenticated } from "react-auth-kit";
 
 export default function ConfirmEmail() {
-    const auth = useAuthUser();
     const [emailConfirmed, setEmailConfirmed] = useState(false);
     const pb = initPocketBase();
 
     useEffect(() => {
         const verified = pb.authStore.model.verified;
         setEmailConfirmed(verified);
-    });
+    }, [pb.authStore.model.verified]);
 
     return (
         <div className="bg-slate-950">

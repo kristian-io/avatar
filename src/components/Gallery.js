@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import initPocketBase from "../helpers/initPocketbase";
 import { useAuthUser } from "react-auth-kit";
 import { IoTrashOutline } from "react-icons/io5";
 import { MdRocketLaunch } from "react-icons/md";
 import { FaSpinner } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import ErrorMessage from "./ErrorMessage";
+import initPocketBase from "../helpers/initPocketbase";
 
 const MAX_GALLERIES_FETCHED = 3;
+
+const NO_ERROR = {
+    error: false,
+    message: "",
+};
 
 export default function GalleryDashboard({ refreshTriggerParrent }) {
     const pb = initPocketBase();
@@ -15,8 +21,8 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
     const [maxResults, setMaxResults] = useState(MAX_GALLERIES_FETCHED);
     const [pageResults, setPageResults] = useState(1);
     const [loadingResults, setLoadingResults] = useState(true);
-    const [showError, setShowError] = useState(false);
-    // const [refreshTrigger, setRefreshTrigger] = useState(refreshTriggerParrent);
+    const [showLoadingError, setShowLoadingError] = useState(false);
+    const [generalError, setGeneralError] = useState(NO_ERROR);
 
     pb.autoCancellation(false);
 
@@ -54,26 +60,22 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
             });
 
             Promise.all(updatedGalleries).then((updatedGalleries) => {
-                console.log("Updated galleries", updatedGalleries);
-                // setGalleries([...galleries, ...updatedGalleries]);
-                setGalleries([...updatedGalleries]);
+                setGalleries([...galleries, ...updatedGalleries]);
                 setLoadingResults(false);
             });
         } catch (error) {
             console.warn(error);
-            setShowError(true);
+            setShowLoadingError(true);
         } finally {
             setLoadingResults(false);
         }
     };
 
     const getUrl = (galleryId, filename, fileToken) => {
-        // retrieve a protected file url (will be valid ~5min)
         const url = pb.files.getUrl(galleryId, filename, {
             token: fileToken,
             thumb: "0x300",
         });
-        // console.log(url)
         return url;
     };
 
@@ -83,20 +85,28 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
     };
 
     const deleteGalleryPhotos = async (galleryId, photoIds) => {
-        // console.log(`Deleting galleryId: ${galleryId} photosIds: ${photoIds}`)
-        if (!photoIds) {
-            // delete all "documents" files
-            await pb.collection("gallery").delete(galleryId);
-            // update the gallery
-        } else {
-            // delete individual files
-            await pb.collection("gallery").update(galleryId, {
-                "image-": photoIds,
+        setGeneralError(NO_ERROR);
+        try {
+            if (!photoIds) {
+                // delete all "documents" files
+                await pb.collection("gallery").delete(galleryId);
+                // update the gallery
+            } else {
+                // delete individual files
+                await pb.collection("gallery").update(galleryId, {
+                    "image-": photoIds,
+                });
+                // update the gallery
+            }
+            removeGalleryPhotos(galleryId);
+        } catch (error) {
+            console.log(error);
+            setGeneralError({
+                error: true,
+                message: "Failed to delete gallery.",
             });
-            // update the gallery
         }
         // setRefreshTrigger(!refreshTrigger);
-        removeGalleryPhotos(galleryId);
     };
 
     const removeGalleryPhotos = (galleryId) => {
@@ -110,17 +120,13 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
     };
 
     async function getTrainingJobStatus(galleryId) {
+        setGeneralError(NO_ERROR);
         try {
             const trainingJob = await pb
                 .collection("training_jobs")
                 .getFirstListItem(`gallery_id="${galleryId}"`);
             return trainingJob;
-        } catch (error) {
-            // console.log(error)
-            // } finally {
-            //     return false
-            // }
-        }
+        } catch (error) {}
         return false;
     }
 
@@ -133,42 +139,27 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                 gallery_id: galleryId,
                 status: "new",
             };
-            const record = await pb.collection("training_jobs").create(data);
+            await pb.collection("training_jobs").create(data);
             // console.log(record)
         } catch (error) {
-            console.log(error);
+            setGeneralError({
+                error: true,
+                message: "Failed to start training the model.",
+            });
         }
     }
 
-    // useEffect(() => {
-    //     // monitor update trigger from the parent element (on files upload) and trigger the state change
-    //     // setRefreshTrigger(!refreshTrigger);
-    //     getUserGalleryData(pageResults);
-    // }, [refreshTrigger]);
-
     useEffect(() => {
-        // monitor update trigger from the parent element (on files upload) and trigger the state change
-        // setRefreshTrigger(!refreshTrigger);
         getUserGalleryData(pageResults);
     }, []);
 
     useEffect(() => {
+        // monitor update trigger from the parent element (on files upload) and trigger the state change
         getUserGalleryData(pageResults);
     }, [refreshTriggerParrent]);
 
     return (
         <div className="bg-slate-950">
-            {showError && (
-                <div className="z-0 relative bg-slate-950 min-h-full h-[calc(100vh-25vh)] overflow-hidden min-w-full text-white">
-                    <div className="flex justify-center">
-                        <div className="m-4 p-4">
-                            <h1 className="text-2xl text-slate-200 shadow-lg">
-                                Failed to load your generated photos.
-                            </h1>
-                        </div>
-                    </div>
-                </div>
-            )}
             <div className="flex justify-center">
                 <div className="w-full lg:w-4/5 ">
                     {galleries.map((gallery) => (
@@ -176,6 +167,9 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                             key={gallery.id}
                             className="mx-4 my-4 p-2 lg:p-6 border-2 border-slate-500 bg-slate-900 rounded"
                         >
+                            {generalError.error && (
+                                <ErrorMessage message={generalError.message} />
+                            )}
                             <div className="flex justify-between flex-wrap items-center gap-4 p-2 mt-2 mb-2 rounded bg-cyan-800 opacity-75 ">
                                 <li>
                                     {gallery.name} | ({gallery.id})
@@ -195,7 +189,7 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                                 {gallery.job_status === "wip" &&
                                     "AI is learning..."}
                                 {gallery.job_status === "done" && (
-                                    <button>
+                                    <button className="flex items-center border border-slate-400 hover:border-slate-200 rounded-lg p-2 transition duration-250">
                                         <Link to={"/gallery"}>Results</Link>
                                     </button>
                                 )}
@@ -224,8 +218,6 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                                             alt=""
                                             src={url}
                                         />
-                                        {/* TODO : we should get the imageURL only once for browser cashing ... This way it does not get cached. */}
-                                        {/* w-24 h-auto  */}
                                     </li>
                                 ))}
                             </ul>
@@ -246,6 +238,18 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                     </div>
                 </div>
             )}
+            {showLoadingError && (
+                <div className="z-0 relative bg-slate-950  text-white">
+                    <div className="flex justify-center">
+                        <div className="m-4 p-4">
+                            <h1 className="text-2xl text-slate-200 shadow-lg">
+                                Failed to load your generated galleries.
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {galleries.length !== 0 && (
                 <div className="flex justify-center">
                     <button
