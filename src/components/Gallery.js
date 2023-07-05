@@ -20,6 +20,7 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
     const [galleries, setGalleries] = useState([]);
     const [maxResults, setMaxResults] = useState(MAX_GALLERIES_FETCHED);
     const [pageResults, setPageResults] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const [loadingResults, setLoadingResults] = useState(true);
     const [showLoadingError, setShowLoadingError] = useState(false);
     const [generalError, setGeneralError] = useState(NO_ERROR);
@@ -37,6 +38,8 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                 });
 
             const fetchedGalleries = results.items;
+            setTotalPages(results.totalPages);
+            console.log("pages", results.totalPages);
             const fileToken = await pb.files.getToken();
 
             const updatedGalleries = fetchedGalleries.map(async (gallery) => {
@@ -60,7 +63,7 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
             });
 
             Promise.all(updatedGalleries).then((updatedGalleries) => {
-                setGalleries([...galleries, ...updatedGalleries]);
+                setGalleries([...updatedGalleries]);
                 setLoadingResults(false);
             });
         } catch (error) {
@@ -250,7 +253,7 @@ export default function GalleryDashboard({ refreshTriggerParrent }) {
                 </div>
             )}
 
-            {galleries.length !== 0 && (
+            {pageResults < totalPages && (
                 <div className="flex justify-center">
                     <button
                         className="flex items-center border border-slate-400 hover:border-slate-200 rounded-lg p-2 m-4 mb-6 transition duration-250"
